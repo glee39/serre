@@ -20,4 +20,4 @@ Here is an example of something I would run from my terminal to generate 2 stimu
 5) Many parts of the code appear redundant for now because I am not sure as to how the requirements of the experiments will change later - therefore, I am leaving it in a way that can accommodate future changes more easily. I am aware it looks ugly :( Just want to wait for more project specifications to finalize before I clean the design. Also, desperately seeking advice for optimizations that would make this less space/time greedy.
 
 ## Can I see examples?
-sample_diff.mp4 is an example stimulus in which there are two objects presented, and sample_same.mp4 is a stimulus with a singular object that is presented twice at different rotations. These are the only two categories of stimulus.
+`sample_diff.mp4` is an example stimulus in which there are two objects presented, and `sample_same.mp4` is a stimulus with a singular object that is presented twice at different rotations. These are the only two categories of stimulus.
