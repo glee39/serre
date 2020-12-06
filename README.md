@@ -12,6 +12,19 @@ Here is an example of something I would run from my terminal to generate 2 stimu
 
 `blender -b -P Documents/workspace/serre/gen.py -- --number 2 --save Documents/workspace/serre/output`
 
+I recommend you open the output videos in VLC, just because they wont open with QuickTime Player.
+
+## I ran the code, but what are all these extra output files?
+The **real** final output videos will look something like 'out1.mp4' or 'out2.mp4' - at this point, you very likely have correctly guessed that the file name is "out" + a counter! But what are these other output files? I shall explain!
+
+'blank.png' is a control image of sorts, just saving a blank canvas of a Blender environment. This is what is used as the buffer screen before each rotated image in the stimulus. It only needs to be generated once.
+
+'image1.png' and 'image2.png' are the frames for the first and second rotations. These two filenames are used and overwritten every single time you need to generate the images for a new stimulus video.
+
+'a.mp4', 'b.mp4', 'c.mp4', and 'd.mp4' are the 4 subsections of the video that become directly stitched together in order to make the final output video. These are also overwritten every time you create a new stimulus. 'a.mp4' and 'c.mp4' are just the video versions of the 'blank.png' image, while 'b.mp4' and 'd.mp4' are generated from 'image1.png' and 'image2.png' (respectively). 
+
+In conclusion, the most important products are all the 'out%d.mp4' videos, and the other outputs are all just placeholders for the images/video subsections that are generated as intermediary steps. You can (and probably should) just delete these from your output folder once you're done generating the stimuli. Alternatively, I would be happy to adjust the filepathing so that these intermediary products go to a separate folder that has its contents all deleted between iterations. Up to you! I mostly keep them around for debugging purposes.
+
 ## Important Notes + Running List of Questions/Flaws
 1) I created and ran this on **MacOS**. Adjustments will have to be made for other systems!
 2) This runs Blender headless, so you never have to touch the GUI. However, I did include the .blend file I created a while back for my initial scripting for reference.
