@@ -1,7 +1,7 @@
 # serre
 
 ## What is this?
-This is my repo to generate training data for the network for Lakshmi! The repo name is not creative and will be changed later. For the 2D stimuli, each stimulus is a single image of a rotated poly-omino. Each stimulus is a video, in the format of `blank screen (1s) --> object (2s) --> blank screen (1s) --> object (2s)`.
+This is my repo to generate training data for the network for Lakshmi! The repo name is not creative and will be changed later. For the [2D stimuli](#2D-section), each stimulus is a single image of a rotated poly-omino. For [3D stimuli](#3D-section), each stimulus is a video in the format of `blank screen (1s) --> object (2s) --> blank screen (1s) --> object (2s)`.
 
 # 2D SECTION
 
@@ -9,9 +9,23 @@ This is my repo to generate training data for the network for Lakshmi! The repo 
 1) If you have not already, you will need to download OpenCV (I used `pip`). There may be other things you have to install, but I can't remember off the top of my head and I'm sure your terminal will let you know.
 
 2) There are currently 2 flags: `--side` takes in a numerical value to specify the side length of the squares that make up the shape and `--legs` takes in an array of 3 integers to indicate the length of each leg of the polyomino. For reference, here is what a polyomino with leg lengths `3 2 4` would look like:
+<p align="center">
+  <img src="sample_2d.png" width="250">
+</p>
 
-<img src="sample_2d.png" width="48">
+If you set leg lengths as `3 2 0`, you will get a two-legged L-shaped figure. **Note**: if you are going to have the first and third legs, you can not set the second leg to a value less than 2 since connecting the first and third legs automatically creates a middle/second leg of length 2 in between them.
 
+In order to generate the above sample image, I ran `python3 gen_2d.py -- --side 65  --legs 3 2 4`.
+
+I haven't set up the output path flag yet, but I anticipate it will be made relatively soon. This script only generates one output image at a time (for now, that is), so once you run it you can expect to see a single new image called `test.png` appear in the same directory from which you ran the script.
+
+### Important Notes + Running List of Questions/Flaws
+1) Need to add flag + implementation for whether or not the starting point/center of the shape being created will be in the center of the canvas or a random starting point
+2) Need to to add flag for user to set the rotation angle (will be a super duper quick fix, but I just have bigger implementation problems to fix first)
+3) [**important**] In order to rotate the shape, I'm rotating the whole canvas and resizing it to ensure that no edges get cut off of the rotated shape. However, this approach is causing inconsistencies in the final rotated shape - the more the shape is rotated, the smaller it ends up being resized. As this could be a confounding factor, this is a very important point to fix.
+4) I'm using the OpenCV `fillPoly` command in order to shade each square of the shape, but this is causing slight displacement in the middle leg - need to figure out why this is the case and fix it
+5) Rotating the shape makes the lines look jagged, and I'm not sure if this needs to be fixed or not
+6) [**important**] Need to work through specifications + edge cases for when the user inputs leg lengths of 0 
 
 # 3D SECTION
 
