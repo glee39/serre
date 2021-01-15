@@ -3,9 +3,11 @@
 ## What is this?
 This is my repo to generate training data for the network for Lakshmi! The repo name is not creative and will be changed later. For the [2D stimuli](#2D-section), each stimulus is a single image of a rotated poly-omino. For [3D stimuli](#3D-section), each stimulus is a video in the format of `blank screen (1s) --> object (2s) --> blank screen (1s) --> object (2s)`.
 
-# 2D SECTION
+# 2D STIMULI
 
 ### How do I run this?
+The 2d stimulus generation file is `gen_2d.py`.
+
 1) If you have not already, you will need to download OpenCV (I used `pip`). There may be other things you have to install, but I can't remember off the top of my head and I'm sure your terminal will let you know.
 
 2) There are currently 2 flags: `--side` takes in a numerical value to specify the side length of the squares that make up the shape and `--legs` takes in an array of 3 integers to indicate the length of each leg of the polyomino. For reference, here is what a polyomino with leg lengths `3 2 4` would look like:
@@ -27,9 +29,12 @@ I haven't set up the output path flag yet, but I anticipate it will be made rela
 5) Rotating the shape makes the lines look jagged, and I'm not sure if this needs to be fixed or not
 6) [**important**] Need to work through specifications + edge cases for when the user inputs leg lengths of 0 
 
-# 3D SECTION
+# 3D STIMULI 
 
 ### How do I run this?
+
+The 3d stimulus generation file is `gen_3d.py`.
+
 1) Open terminal from somewhere you can run Blender from - I personally set a path so I can run it just using the `blender` command. I did so by following this [link](https://docs.blender.org/manual/en/latest/advanced/command_line/launch/macos.html).
 
 2) There are currently two flags: `--number` to specify the number of stimuli you want to generate, and `--save` to detail the folder you want to save said outputs in relative to your working directory.
