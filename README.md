@@ -10,7 +10,7 @@ This is my repo to generate training data for the network for Lakshmi! The repo 
 
 2) There are currently 2 flags: `--side` takes in a numerical value to specify the side length of the squares that make up the shape and `--legs` takes in an array of 3 integers to indicate the length of each leg of the polyomino. For reference, here is what a polyomino with leg lengths `3 2 4` would look like:
 
-![sample 2d](/2d_sample.png)
+<img src="sample_2d.png" width="48">
 
 
 # 3D SECTION
