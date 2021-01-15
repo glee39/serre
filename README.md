@@ -16,7 +16,7 @@ The 2d stimulus generation file is `gen_2d.py`.
 </p>
 If you want to look at it in detail, the file is `sample_2d.png` in the repo.
 
-If you set leg lengths as `3 2 0`, you will get a two-legged L-shaped figure. **Note**: if you are going to have the first and third legs, you can not set the second leg to a value less than 2 since connecting the first and third legs automatically creates a middle/second leg of length 2 in between them.
+If you set one of the leg lengths to 0, such as `3 2 0`, you will get a two-legged L-shaped figure. If you set 2 of the leg lengths to 0, you will get a single-legged figure. **Note**: if you are going to have the first and third legs, you can not set the second leg to a value less than 2 since connecting the first and third legs automatically creates a middle/second leg of length 2 in between them.
 
 In order to generate the above sample image, I ran `python3 gen_2d.py -- --side 65  --legs 3 2 4`.
 
