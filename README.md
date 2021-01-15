@@ -3,6 +3,13 @@
 ## What is this?
 This is my repo to generate training data for the network for Lakshmi! The repo name is not creative and will be changed later. Each stimulus is a video, in the format of `blank screen (1s) --> object (2s) --> blank screen (1s) --> object (2s)`.
 
+###### 2D SECTION
+
+## How do I run this?
+
+
+###### 3D SECTION
+
 ## How do I run this?
 1) Open terminal from somewhere you can run Blender from - I personally set a path so I can run it just using the `blender` command. I did so by following this [link](https://docs.blender.org/manual/en/latest/advanced/command_line/launch/macos.html).
 
