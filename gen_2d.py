@@ -16,87 +16,110 @@ def get_args():
     # add parser rules
     parser.add_argument('-n', '--side', help="side length per square (in pixels)")
     parser.add_argument('--legs', nargs='+', type=int)
+    parser.add_argument("--rand-start", default=False, action="store_true",
+                    help="Determine whether or not you want your shape to have a random starting point. Default is False.")
 
     parsed_script_args, _ = parser.parse_known_args(script_args)
 
     return parsed_script_args
 
-def drawLeg(upper_left, leg_len, orientation):
-    if orientation == 0: # change to enum
-        x_disp = 0
-        y_disp = side_len
-    else:
-        x_disp = side_len
-        y_disp = 0
+def get_rects(center, theta, side_len, orientation):
+    theta = np.radians(theta)
+    c, s = np.cos(theta), np.sin(theta)
+    R = np.matrix('{} {}; {} {}'.format(c, -s, s, c))
 
-    for i in range(leg_len):
-
-        upper_right = (upper_left[0] + side_len, upper_left[1])
-        lower_left = (upper_left[0], upper_left[1] + side_len)
-        lower_right = (upper_left[0] + side_len, upper_left[1] + side_len)
-
-        cv.rectangle(img, upper_left , lower_right, (128,128,128), 5)
-
-        # fillPoly is creating a displacement in the middle leg of the shape
-        # points = np.array([list(upper_left), list(upper_right), list(lower_right), list(lower_left)])
-        # cv.fillPoly(img, np.int32([points]), (220, 220, 220))
-        
-        upper_left = (upper_left[0] + x_disp, upper_left[1] + y_disp)
+    # get coords relative to center
+    p1_shift = [ - side_len / 2, - side_len / 2]
+    p2_shift = [side_len / 2, - side_len / 2]
+    p3_shift = [side_len / 2, side_len / 2]
+    p4_shift = [ - side_len / 2, side_len / 2]
     
-    return upper_left
+    # rotate coords about center
+    p1_new = np.dot(p1_shift, R) + center
+    p2_new = np.dot(p2_shift, R) + center
+    p3_new = np.dot(p3_shift, R) + center
+    p4_new = np.dot(p4_shift, R) + center
+
+    # extract coords from np.dot output to neatly input into cv.line()
+    p1 = (int(p1_new[0,0]), int(p1_new[0,1]))
+    p2 = (int(p2_new[0,0]), int(p2_new[0,1]))
+    p3 = (int(p3_new[0,0]), int(p3_new[0,1]))
+    p4 = (int(p4_new[0,0]), int(p4_new[0,1]))
+    
+    all_points.extend([p1, p2, p3, p4])
+    all_centers.append(center)
+
+    if orientation == 1: # vertical leg
+        new_center = (center[0] + side_len * np.sin(theta), center[1] + side_len * np.cos(theta))
+    else: # horizontal leg
+        theta = np.radians(np.degrees(theta) + 90)
+        new_center = (center[0] + side_len * np.sin(theta), center[1] + side_len * np.cos(theta))
+    
+    return new_center
+
+def translation(coord):
+    x = coord[0]
+    y = coord[1]
+    translation = [0, 0]
+    if x <= 0 or x >= canvas_size:
+        x_trans = abs(x) if x <= 0 else canvas_size - x
+        translation[0] = x_trans
+    if y <= 0 or y >= canvas_size:
+        y_trans = abs(y) if y <= 0 else canvas_size - y
+        translation[1] = y_trans
+
+    return translation
 
 # get parameters from command line args
 args = get_args()
 side_len = int(args.side)
 legs = args.legs
+rand_start = args.rand_start
 
-canvas_size = 500
+# set canvas size (change to parameter?)
+canvas_size = 1200
 img = np.zeros((canvas_size, canvas_size, 3), np.uint8)
+theta = random.randint(0, 360)
 
-# recheck buffer values to accommodate rotation?
-y_buffer = (legs[0] + legs[2]) * side_len
-x_buffer = legs[1] * side_len
+all_points = []
+all_centers = []
 
-start = (random.randint(0, canvas_size - x_buffer), random.randint(0, canvas_size - y_buffer))
-leg1_end = drawLeg(start, legs[0], 0)
-leg1_end = (leg1_end[0], leg1_end[1] - side_len)
-leg2_end = drawLeg(leg1_end, legs[1], 1)
-leg2_end = (leg2_end[0] - side_len, leg2_end[1])
-drawLeg(leg2_end, legs[2], 0)
-
-# find middle point
-leg2_len = legs[1]
-if leg2_len % 2 == 0:
-    midpoint_x = leg1_end[0] + (leg2_len / 2) * side_len
+# set center for first leg's first square
+if rand_start:
+    center = (random.randint(0, canvas_size), random.randint(0, canvas_size))
 else:
-    midpoint_x = leg1_end[0] + (leg2_len // 2) * side_len + side_len / 2
+    # fix this
+    center = (600,600)
 
-midpoint_y = leg1_end[1] + side_len / 2
+for i in range(legs[0]): #first leg, vertical
+    center = get_rects(center, theta, side_len, 1)
+center = all_centers[-1]
+for i in range(legs[1]): #second leg, horizontal
+    center = get_rects(center, theta, side_len, 0)
+center = all_centers[-1]
+for i in range(legs[2]): #third leg, vertical
+    center = get_rects(center, theta, side_len, 1)
 
-def rotate_about_center(src, angle, scale=1.):
-    w = src.shape[1]
-    h = src.shape[0]
-    r_angle = np.deg2rad(angle) 
+# using all the coordinates, find the translation necessary to keep the shape in frame
+translations = [translation(point) for point in all_points]
+max_x_trans = max([sub[0] for sub in translations], key = abs)
+max_y_trans = max([sub[1] for sub in translations], key = abs)
 
-    # calculate new image width and height
-    nw = (abs(np.sin(r_angle)*h) + abs(np.cos(r_angle)*w))*scale
-    nh = (abs(np.cos(r_angle)*h) + abs(np.sin(r_angle)*w))*scale
-    # ask OpenCV for the rotation matrix
-    rot_mat = cv.getRotationMatrix2D((nw*0.5, nh*0.5), angle, scale)
-    # calculate move from old center to new center combined with rotation
-    rot_move = np.dot(rot_mat, np.array([(nw-w)*0.5, (nh-h)*0.5,0]))
-    # update the translation part of the transform
-    rot_mat[0,2] += rot_move[0]
-    rot_mat[1,2] += rot_move[1]
+all_points = [(point[0] + max_x_trans, point[1] + max_y_trans) for point in all_points]
+num_rects = int(len(all_points) / 4)
+for i in range(num_rects):
+    corners = all_points[i * 4 : i * 4 + 4]
+    # draw rectangle (dark gray)
+    cv.line(img, corners[0], corners[1], (128,128,128), 4)
+    cv.line(img, corners[1], corners[2], (128,128,128), 4)
+    cv.line(img, corners[2], corners[3], (128,128,128), 4)
+    cv.line(img, corners[3], corners[0], (128,128,128), 4)
 
-    return cv.warpAffine(src, rot_mat, (int(math.ceil(nw)), int(math.ceil(nh))))
+    # fill in rectangle (light gray)
+    points = np.array([list(corners[0]), list(corners[1]), list(corners[2]), list(corners[3])])
+    cv.fillPoly(img, np.int32([points]), (220, 220, 220))
 
-# rotation causes jagged edges
-rot_angle = random.randint(0, 360)
-rot_img = rotate_about_center(img, rot_angle)
-# rot_img = ndimage.rotate(img, rot_angle)
-rot_img[rot_img == 0] = 255
+# change black background to white
+img[img == 0] = 255
 
-# img[img == 0] = 255
-# cv.imwrite('test.png', img)
-cv.imwrite('test.png', rot_img)
+cv.imwrite('test.png', img)
