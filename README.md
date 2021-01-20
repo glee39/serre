@@ -10,25 +10,34 @@ The 2d stimulus generation file is `gen_2d.py`.
 
 1) If you have not already, you will need to download OpenCV (I used `pip`). There may be other things you have to install, but I can't remember off the top of my head and I'm sure your terminal will let you know.
 
-2) There are currently 2 flags: `--side` takes in a numerical value to specify the side length of the squares that make up the shape and `--legs` takes in an array of 3 integers to indicate the length of each leg of the polyomino. For reference, here is what a polyomino with leg lengths `3 2 4` would look like:
+2) There are currently 4 flags:    
+`--theta` is the rotation value (in degrees)   
+`--side` takes in a numerical value to specify the side length of the squares that make up the shape    
+`--legs` takes in an array of 3 integers to indicate the length of each leg of the polyomino. For reference, here is what a polyomino with leg lengths `3 2 4` would look like:
 <p align="center">
-  <img src="sample_2d.png" width="250">
+  <img src="sample_2d_main.png" width="250">
 </p>
-If you want to look at it in detail, the file is `sample_2d.png` in the repo.
+If you want to look at it in detail, the file is `sample_2d.png` in the repo.     
+
+`--rand-start` is a Boolean to choose whether you want your rotation point to be in the center or randomized. It defaults to False.   
 
 If you set one of the leg lengths to 0, such as `3 2 0`, you will get a two-legged L-shaped figure. If you set 2 of the leg lengths to 0, you will get a single-legged figure. **Note**: if you are going to have the first and third legs, you can not set the second leg to a value less than 2 since connecting the first and third legs automatically creates a middle/second leg of length 2 in between them.
 
-In order to generate the above sample image, I ran `python3 gen_2d.py -- --side 65  --legs 3 2 4`.
+In order to generate the above sample image, I ran `python3 gen_2d.py -- --theta 200 --side 65  --legs 3 2 4 --rand-start True`.
 
-I haven't set up the output path flag yet, but I anticipate it will be made relatively soon. This script only generates one output image at a time (for now, that is), so once you run it you can expect to see a single new image called `test.png` appear in the same directory from which you ran the script.
+I haven't set up the output path flag yet, but I will once I get the go-ahead on mass production! This script only generates one output image at a time (for now, that is), so once you run it you can expect to see a single new image called `test.png` appear in the same directory from which you ran the script.
 
 ### Important Notes + Running List of Questions/Flaws
-1) Need to add flag + implementation for whether or not the starting point/center of the shape being created will be in the center of the canvas or a random starting point
-2) Need to to add flag for user to set the rotation angle (will be a super duper quick fix, but I just have bigger implementation problems to fix first)
-3) [**important**] In order to rotate the shape, I'm rotating the whole canvas and resizing it to ensure that no edges get cut off of the rotated shape. However, this approach is causing inconsistencies in the final rotated shape - the more the shape is rotated, the smaller it ends up being resized. As this could be a confounding factor, this is a very important point to fix.
-4) I'm using the OpenCV `fillPoly` command in order to shade each square of the shape, but this is causing slight displacement in the middle leg - need to figure out why this is the case and fix it
-5) Rotating the shape makes the lines look jagged, and I'm not sure if this needs to be fixed or not
-6) [**important**] Need to work through specifications + edge cases for when the user inputs leg lengths of 0 
+1) I'm using the OpenCV `fillPoly` command in order to shade each square of the shape, but this is causing slight displacement in the middle leg - need to figure out why this is the case and fix it
+2) [**important**] Need to work through specifications + edge cases for when the user inputs leg lengths of 0 
+3) [**important**] Want to specify about canvas size, because I need to know about any variation in canvas size in order to work through edge cases with side length
+4) Need to put in assertions for user input in flags - I can do this fairly quickly once we nail down the specifications!
+5) If you set the `--rand-start` flag to True, the shape most likely initially is partially out of the canvas - I fixed this with a translation, but it usually ends up looking something like this:
+
+<p align="center">
+  <img src="sample_2d_rand.png" width="250">
+</p>
+
 
 # 3D STIMULI 
 
