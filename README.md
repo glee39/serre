@@ -13,16 +13,14 @@ The 2d stimulus generation file is `gen_2d.py`.
 2) There are currently 4 flags:    
 `--theta` is the rotation value (in degrees)   
 `--side` takes in a numerical value to specify the side length of the squares that make up the shape    
-`--legs` takes in an array of 3 integers to indicate the length of each leg of the polyomino. For reference, here is what a polyomino with leg lengths `3 2 4` would look like:
+`--legs` takes in an array of 3 integers to indicate the length of each leg of the polyomino. For reference, here is what a polyomino with leg lengths `3 0 4` would look like:
 <p align="center">
   <img src="sample_2d_primary.png" width="250">
 </p>
 
 `--rand-start` is a Boolean to choose whether you want your rotation point to be in the center or randomized. It defaults to `False`.   
 
-If you set one of the leg lengths to 0, such as `3 2 0`, you will get a two-legged L-shaped figure. If you set 2 of the leg lengths to 0, you will get a single-legged figure. **Note**: if you are going to have the first and third legs, you can not set the second leg to a value less than 2 since connecting the first and third legs automatically creates a middle/second leg of length 2 in between them.
-
-In order to generate the above sample image, I ran `python3 gen_2d.py -- --theta 600 --side 65  --legs 3 2 4 --rand-start True`.
+In order to generate the above sample image, I ran `python3 gen_2d.py -- --theta 600 --side 65  --legs 3 0 4 --rand-start True`.
 
 I haven't set up the output path flag yet, but I will once I get the go-ahead on mass production! This script only generates one output image at a time (for now, that is), so once you run it you can expect to see a single new image called `test.png` appear in the same directory from which you ran the script.
 
