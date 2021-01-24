@@ -14,11 +14,11 @@ def get_args():
     script_args = all_arguments[double_dash_index + 1: ]
 
     # add parser rules
-    parser.add_argument('-n', '--side', help="side length per square (in pixels)")
+    parser.add_argument('--theta', help="rotation angle (in degrees)")
+    parser.add_argument('--side', help="side length per square (in pixels)")
     parser.add_argument('--legs', nargs='+', type=int)
     parser.add_argument("--rand-start", default=False, action="store_true",
                     help="Determine whether or not you want your shape to have a random starting point. Default is False.")
-
     parsed_script_args, _ = parser.parse_known_args(script_args)
 
     return parsed_script_args
@@ -75,11 +75,11 @@ args = get_args()
 side_len = int(args.side)
 legs = args.legs
 rand_start = args.rand_start
+theta = int(args.theta)
 
 # set canvas size (change to parameter?)
 canvas_size = 1200
 img = np.zeros((canvas_size, canvas_size, 3), np.uint8)
-theta = random.randint(0, 360)
 
 all_points = []
 all_centers = []
@@ -94,7 +94,7 @@ else:
 for i in range(legs[0]): #first leg, vertical
     center = get_rects(center, theta, side_len, 1)
 center = all_centers[-1]
-for i in range(legs[1]): #second leg, horizontal
+for i in range(legs[1] + 2): #second leg, horizontal
     center = get_rects(center, theta, side_len, 0)
 center = all_centers[-1]
 for i in range(legs[2]): #third leg, vertical
