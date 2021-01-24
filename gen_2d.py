@@ -54,7 +54,7 @@ def get_rects(center, theta, side_len, orientation):
     else: # horizontal leg
         theta = np.radians(np.degrees(theta) + 90)
         new_center = (center[0] + side_len * np.sin(theta), center[1] + side_len * np.cos(theta))
-    
+
     return new_center
 
 def translation(coord):
@@ -94,9 +94,8 @@ else:
 for i in range(legs[0]): #first leg, vertical
     center = get_rects(center, theta, side_len, 1)
 center = all_centers[-1]
-for i in range(legs[1] + 2): #second leg, horizontal
+for i in range(legs[1]+1): #second leg, horizontal
     center = get_rects(center, theta, side_len, 0)
-center = all_centers[-1]
 for i in range(legs[2]): #third leg, vertical
     center = get_rects(center, theta, side_len, 1)
 
@@ -116,8 +115,8 @@ for i in range(num_rects):
     cv.line(img, corners[3], corners[0], (128,128,128), 4)
 
     # fill in rectangle (light gray)
-    points = np.array([list(corners[0]), list(corners[1]), list(corners[2]), list(corners[3])])
-    cv.fillPoly(img, np.int32([points]), (220, 220, 220))
+    # points = np.array([list(corners[0]), list(corners[1]), list(corners[2]), list(corners[3])])
+    # cv.fillPoly(img, np.int32([points]), (220, 220, 220))
 
 # change black background to white
 img[img == 0] = 255
