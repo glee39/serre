@@ -120,5 +120,3 @@ for i in range(num_rects):
 
 # change black background to white
 img[img == 0] = 255
-
-cv.imwrite('test.png', img)

@@ -77,7 +77,7 @@ def translation(coord, canvas_size):
 def make_img(rand_start, legs, theta, side_len):
 
     # set canvas size (change to parameter?)
-    canvas_size = 1200
+    canvas_size = 64
 
     img = np.zeros((canvas_size, canvas_size, 3), np.uint8)
 
@@ -89,7 +89,7 @@ def make_img(rand_start, legs, theta, side_len):
         center = (random.randint(0, canvas_size), random.randint(0, canvas_size))
     else:
         # fix this
-        center = (600,600)
+        center = (32,32)
 
     for i in range(legs[0]): #first leg, vertical
         center = get_rects(center, theta, side_len, 1, all_points, all_centers)
@@ -109,10 +109,10 @@ def make_img(rand_start, legs, theta, side_len):
     for i in range(num_rects):
         corners = all_points[i * 4 : i * 4 + 4]
         # draw rectangle (dark gray)
-        cv.line(img, corners[0], corners[1], (128,128,128), 4)
-        cv.line(img, corners[1], corners[2], (128,128,128), 4)
-        cv.line(img, corners[2], corners[3], (128,128,128), 4)
-        cv.line(img, corners[3], corners[0], (128,128,128), 4)
+        cv.line(img, corners[0], corners[1], (128,128,128), 1)
+        cv.line(img, corners[1], corners[2], (128,128,128), 1)
+        cv.line(img, corners[2], corners[3], (128,128,128), 1)
+        cv.line(img, corners[3], corners[0], (128,128,128), 1)
 
         # fill in rectangle (light gray)
         # points = np.array([list(corners[0]), list(corners[1]), list(corners[2]), list(corners[3])])
@@ -127,23 +127,6 @@ def make_img(rand_start, legs, theta, side_len):
 args = get_args()
 num_stim = int(args.vol)
 
-# remove excel sheet if existing
-path = os.path.abspath(os.getcwd()) + '/stim_data.xlsx'
-if os.path.exists(path):
-    os.remove(path)
-
-# create excel workbook and sheet
-wb = Workbook()
-
-sheet1 = wb.worksheets[0]
-sheet1.cell(1,1).value = 'stim num'
-sheet1.cell(1,2).value = 'leg1 len'
-sheet1.cell(1,3).value = 'leg2 len'
-sheet1.cell(1,4).value = 'leg3 len'
-sheet1.cell(1,5).value = 'side len'
-sheet1.cell(1,6).value = 'rot angle'
-sheet1.cell(1,7).value = 'rand start'
-
 # image output path
 # clear all images inside output folder if it already exists
 out_path = os.path.abspath(os.getcwd()) + '/output/'
@@ -157,35 +140,19 @@ else:
 start = time.time()
 
 for i in range(num_stim):
-    stim_num = i + 1
     leg1 = randrange(1, 5)
     leg2 = randrange(5)
     leg3 = randrange(5) if leg2 != 0 else randrange(1,5)
-    side_len = 70
-    rand_start = randrange(2)
+    side_len = 4
+    # rand_start = randrange(2)
+    rand_start = 0
     rot_angle = randrange(360)
 
+    # img = make_img(rand_start,[5, 5, 5], rot_angle, side_len)
     img = make_img(rand_start,[leg1, leg2, leg3], rot_angle, side_len)
-
-    file_name = str(stim_num) + '.jpg'
+    file_name = str(leg1) + "_" + str(leg2) + "_" + str(leg3) + "_" + str(rot_angle) + ".jpg"
     cv.imwrite(os.path.join(out_path , file_name), img)
 
-    sheet1.cell(stim_num + 1, 1).value = stim_num
-    sheet1.cell(stim_num + 1, 2).value = leg1
-    sheet1.cell(stim_num + 1, 3).value = leg2
-    sheet1.cell(stim_num + 1, 4).value = leg3
-    sheet1.cell(stim_num + 1, 5).value = side_len
-    sheet1.cell(stim_num + 1, 6).value = rot_angle
-    sheet1.cell(stim_num + 1, 7).value = rand_start
-    # sheet1.write(stim_num, 0, stim_num) 
-    # sheet1.write(stim_num, 1, leg1) 
-    # sheet1.write(stim_num, 2, leg2) 
-    # sheet1.write(stim_num, 3, leg3)
-    # sheet1.write(stim_num, 4, side_len) 
-    # sheet1.write(stim_num, 5, rot_angle) 
-    # sheet1.write(stim_num, 6, rand_start) 
-
-wb.save('stim_data.xlsx') 
 
 end = time.time()
 print("ELAPSED TIME FOR " + str(num_stim) + " STIMULI: " + str(end - start))
