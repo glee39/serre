@@ -5,10 +5,6 @@ import random
 from random import randrange
 import math
 import os
-# import xlwt 
-# from xlwt import Workbook 
-import openpyxl
-from openpyxl import Workbook
 import glob
 import time
 
