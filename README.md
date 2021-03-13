@@ -1,35 +1,33 @@
 # serre
 
 ## What is this?
-This is my repo to generate training data for the network for Lakshmi! The repo name is not creative and will be changed later. For the [2D stimuli](#2D-section), each stimulus is a single image of a rotated polyomino. For [3D stimuli](#3D-section), each stimulus is a video in the format of `blank screen (1s) --> object (2s) --> blank screen (1s) --> object (2s)`.
+This is my repo to generate training data for the network for Lakshmi! For the [2D stimuli](#2D-section), each stimulus is a single image of a rotated polyomino. For [3D stimuli](#3D-section), each stimulus is a video in the format of `blank screen (1s) --> object (2s) --> blank screen (1s) --> object (2s)`.
 
 # 2D STIMULI
 
 ### How do I run this?
-The 2d stimulus generation file is `gen_2d.py`.
+The 2d stimulus generation file is `gen_2d_simple.py`. `gen_2d.py` is its older and lesser cousin.
 
 1) If you have not already, you will need to download OpenCV (I used `pip`). There may be other things you have to install, but I can't remember off the top of my head and I'm sure your terminal will let you know.
 
-2) There are currently 4 flags:    
-`--theta` is the rotation value (in degrees)   
-`--side` takes in a numerical value to specify the side length of the squares that make up the shape    
-`--legs` takes in an array of 3 integers to indicate the length of each leg of the polyomino. For reference, here is what a polyomino with leg lengths `3 0 4` would look like:
+2) There is currently one flag, which is `vol`, which stands for the number of random images you would like to generate.   
+
+For reference, here is what a polyomino with leg lengths `3 0 4` would look like:
 <p align="center">
   <img src="sample_2d_primary.png" width="250">
-</p>
+</p>  
 
-`--rand-start` is a Boolean to choose whether you want your rotation point to be in the center or randomized. It defaults to `False`.   
+In order to generate the above sample image, I ran `python3 gen_2d_simple.py -- --vol 1`.
 
-In order to generate the above sample image, I ran `python3 gen_2d.py -- --theta 600 --side 65  --legs 3 0 4 --rand-start True`.
+For every newly generated stimulus, two main categories are randomized: 1) the number of blocks in each leg and 2) theta (degree of rotation). Every polyomino is centered and has the same side length of 8. The canvas is always 64 x 64 and the number of blocks in each leg never exceeds 5. 
 
-I haven't set up the output path flag yet, but I will once I get the go-ahead on mass production! This script only generates one output image at a time (for now, that is), so once you run it you can expect to see a single new image called `test.png` appear in the same directory from which you ran the script.
+It is set up so that if you do not have an `output` folder already, it creates it for you. If you already have it, it will erase everything you have in it and start over. In case we want to just keep accumulating data, I can of course change this. Each output image is named in the format `{leg1 len}_{leg2 len}_{leg3 len}_{theta}`. This is because of the `2d_sample.py` file!
+
+The `2d_sample.py` file has the flag `sample` with options 1, 2, and 3. Each option returns the matrix representations of two images pulled from the generated dataset. For option 1, the two stimuli are exactly the same. For 2, the stimuli have the same leg lengths but different theta. For 3, you get two stimuli with different leg lengths and different rotation angles.
 
 ### Important Notes + Running List of Questions/Flaws
 1) I'm using the OpenCV `fillPoly` command in order to shade each square of the shape, but this is causing slight displacement in the middle leg - need to figure out why this is the case and fix it
-2) [**important**] Need to work through specifications + edge cases for when the user inputs leg lengths of 0 
-3) [**important**] Want to specify about canvas size, because I need to know about any variation in canvas size in order to work through edge cases with side length
-4) Need to put in assertions for user input in flags - I can do this fairly quickly once we nail down the specifications!
-5) If you set the `--rand-start` flag to True, the shape most likely initially is partially out of the canvas - I fixed this with a translation, but it usually ends up looking something like this:
+2) Need to put in assertions for user input in flags - I can do this fairly quickly once we nail down the specifications!
 
 <p align="center">
   <img src="sample_2d_rand.png" width="250">
